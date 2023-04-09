@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <router-view></router-view>
-  </div>
+  <div>后台首页</div>
 </template>
 
 <script setup></script>
