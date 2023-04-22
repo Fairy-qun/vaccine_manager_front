@@ -8,3 +8,10 @@ export const register = data => {
 export const login = data => {
   return axios.post('/users/login', data)
 }
+
+// 获取用户信息
+export const getUserInfo = data => {
+  return axios.post('/users/getUserInfo', {
+    user_name: data.user_name
+  })
+}

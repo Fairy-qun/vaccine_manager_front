@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { login } from '@/api/user.js'
+import { login, getUserInfo } from '@/api/user.js'
 import { setStorage } from '@/storage.js'
 import { User, Lock } from '@element-plus/icons-vue'
 import { notice } from '@/utils.js'
@@ -39,13 +39,18 @@ const onSubmit = async () => {
   const res = await login(user)
   // console.log(res)
   if (res.code === 0) {
+    const res1 = await getUserInfo(user)
+    if (res1.code === 0) {
+      setStorage('user_info', JSON.stringify(res1.data))
+    }
     setStorage('token', res.data.token)
     notice({ message: res.msg })
-    router.push('/home')
+    router.push('/index')
   } else {
     notice({ type: 'error', message: res.msg })
   }
 }
+
 // 监听键盘事件
 window.addEventListener('keydown', e => {
   if (e.key == 'Enter') {

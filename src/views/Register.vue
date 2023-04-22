@@ -59,6 +59,13 @@ const onSubmit = () => {
 const goLogin = () => {
   router.push('/login')
 }
+
+// 监听键盘事件
+window.addEventListener('keydown', e => {
+  if (e.key == 'Enter') {
+    onSubmit()
+  }
+})
 </script>
 
 <style lang="scss" scoped>

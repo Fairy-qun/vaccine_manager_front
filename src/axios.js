@@ -7,7 +7,19 @@ const service = axios.create({
 /**
  * 请求拦截器
  */
-service.interceptors.request.use()
+service.interceptors.request.use(
+  function (config) {
+    // 自动添加token
+    const token = sessionStorage.getItem('token')
+    if (token) {
+      config.headers['token'] = token
+    }
+    return config
+  },
+  function (err) {
+    return Promise.reject(err)
+  }
+)
 
 /**
  * 响应拦截器
