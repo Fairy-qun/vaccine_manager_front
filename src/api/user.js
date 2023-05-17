@@ -15,3 +15,17 @@ export const getUserInfo = data => {
     user_name: data.user_name
   })
 }
+
+// 获取用户信息所有
+export const getUserInfoAll = data => {
+  return axios.post('/users/getInfoAll')
+}
+
+// 设置用户角色
+export const setUserRole = data => {
+  return axios.post('/users/setRole', data)
+}
+// 重置用户密码
+export const resetPwd = data => {
+  return axios.post('/users/reset', data)
+}

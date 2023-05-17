@@ -3,12 +3,12 @@
     <!-- 表单数据 -->
     <div class="form-item">
       <h1>欢迎登录</h1>
-      <el-form :model="user">
-        <el-form-item>
+      <el-form :model="user" :rules="rulesForm">
+        <el-form-item prop="user_name">
           <el-input v-model="user.user_name" :prefix-icon="User" placeholder="请输入用户名"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input v-model="user.user_password" :prefix-icon="Lock" placeholder="请输入用户密码"></el-input>
+        <el-form-item prop="user_password">
+          <el-input v-model="user.user_password" :prefix-icon="Lock" placeholder="请输入用户密码" :show-password="true"></el-input>
         </el-form-item>
       </el-form>
       <el-button type="primary" style="width: 100%" @click="onSubmit">登录</el-button>
@@ -28,6 +28,12 @@ import { useRouter } from 'vue-router'
 const user = reactive({
   user_name: '',
   user_password: ''
+})
+
+// 表单验证
+const rulesForm = reactive({
+  user_name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  user_password: [{ required: true, message: '请输入用户密码', trigger: 'blur' }]
 })
 // 跳转到登录页
 const router = useRouter()
@@ -62,8 +68,10 @@ window.addEventListener('keydown', e => {
 <style lang="scss" scoped>
 .container {
   width: 100%;
-  height: 100%;
-  background-image: url('@/assets/city-1.jpg');
+  // height: 100%;
+  height: calc(100vh);
+  background: url('@/assets/login_bgc.jpg') no-repeat;
+  background-size: cover;
   .form-item {
     position: absolute;
     top: 50%;
@@ -72,7 +80,8 @@ window.addEventListener('keydown', e => {
     padding: 20px;
     width: 400px;
     height: 300px;
-    background-color: skyblue;
+    background-color: #fff;
+    box-shadow: 2px 2px 2px 2px;
     border-radius: 10px;
     h1 {
       margin-bottom: 20px;

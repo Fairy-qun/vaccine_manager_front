@@ -2,7 +2,7 @@
   <div class="main">
     <!-- 左侧数据 -->
     <div class="left_icon">
-      <div class="title">社区新冠疫苗接种管理系统</div>
+      <div class="title">社区疫苗接种管理系统</div>
       <div class="icon" @click="changeAsideWidth">
         <el-tooltip :content="store.asideWidth === 200 ? '收纳' : '展开'" placement="bottom">
           <el-icon :size="25" color="#ffffff" v-if="store.asideWidth === 200"><Fold /></el-icon>
@@ -35,13 +35,27 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item command="person">个人中心</el-dropdown-item>
+              <el-dropdown-item command="reset">重置密码</el-dropdown-item>
               <el-dropdown-item command="logout">注销登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
       </div>
     </div>
+    <!-- 修改密码弹框 -->
+    <el-dialog v-model="dialogResetVisible" title="修改密码" width="30%">
+      <el-form :model="resetForm">
+        <el-form-item label="新密码">
+          <el-input v-model="resetForm.pwd" placeholder="请输入新密码"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="confirmReset"> 确认 </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -50,6 +64,9 @@ import { useStore } from '@/store/index.js'
 import { getStorage, removeStorage } from '@/storage.js'
 import { useRouter } from 'vue-router'
 import { useFullscreen } from '@vueuse/core'
+import { resetPwd } from '@/api/user.js'
+import { notice } from '@/utils.js'
+import { ref, reactive } from 'vue'
 
 const { isFullscreen, toggle } = useFullscreen()
 
@@ -68,19 +85,39 @@ const changeAsideWidth = () => {
     store.changeCollapse(false)
   }
 }
-
+const resetForm = reactive({
+  pwd: ''
+})
 const handleCommand = e => {
   switch (e) {
-    case 'person':
-      console.log('个人中心')
+    case 'reset':
+      dialogResetVisible.value = true
       break
     case 'logout':
       removeStorage('user_info')
       removeStorage('token')
+      removeStorage('tablist')
       router.push('/login')
+      location.reload()
       break
   }
 }
+const confirmReset = () => {
+  resetPwd({ id: user.id, user_password: resetForm.pwd }).then(res => {
+    if (res.code === 0) {
+      notice({ message: `修改${user.user_name}用户密码成功` })
+      removeStorage('token')
+      removeStorage('user_info')
+      removeStorage('tablist')
+      dialogResetVisible.value = false
+      router.push('/login')
+      location.reload()
+    } else {
+      notice({ message: `修改${user.user_name}用户密码失败` })
+    }
+  })
+}
+const dialogResetVisible = ref(false)
 
 // 刷新页面
 const refreshHandler = () => {

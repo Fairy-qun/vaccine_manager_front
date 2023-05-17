@@ -3,20 +3,20 @@
     <!-- 表单数据 -->
     <div class="form-item">
       <h1>注册用户</h1>
-      <el-form :model="user">
-        <el-form-item>
+      <el-form :model="user" :rules="ruleForm">
+        <el-form-item prop="user_name">
           <el-input v-model="user.user_name" :prefix-icon="User" placeholder="请输入用户名"></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="user_password">
           <el-input v-model="user.user_password" :prefix-icon="Lock" placeholder="请输入用户密码"></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="user_mobile">
           <el-input v-model="user.user_mobile" :prefix-icon="Iphone" placeholder="请输入手机号"></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="user_numberId">
           <el-input v-model="user.user_numberId" :prefix-icon="CreditCard" placeholder="请输入身份证号"></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="user_role">
           <el-radio-group v-model="user.user_role" class="ml-4">
             <el-radio label="0" size="large">管理员</el-radio>
             <el-radio label="1" size="large">普通用户</el-radio>
@@ -44,6 +44,15 @@ const user = reactive({
   user_numberId: '',
   user_role: ''
 })
+// 验证表单
+const ruleForm = reactive({
+  user_name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  user_password: [{ required: true, message: '请输入用户密码', trigger: 'blur' }],
+  user_mobile: [{ required: true, message: '请输入用户手机号', trigger: 'blur' }],
+  user_numberId: [{ required: true, message: '请输入用户身份证号', trigger: 'blur' }],
+  user_role: [{ required: true, message: '请选择用户角色', trigger: 'blur' }]
+})
+
 // 注册回调
 const onSubmit = () => {
   register(user).then(res => {
@@ -71,8 +80,9 @@ window.addEventListener('keydown', e => {
 <style lang="scss" scoped>
 .container {
   width: 100%;
-  height: 100%;
-  background-image: url('@/assets/city-1.jpg');
+  height: calc(100vh);
+  background: url('@/assets/login_bgc.jpg') no-repeat;
+  background-size: cover;
   .form-item {
     position: absolute;
     top: 50%;
@@ -81,7 +91,8 @@ window.addEventListener('keydown', e => {
     padding: 20px;
     width: 400px;
     height: 500px;
-    background-color: skyblue;
+    background-color: #fff;
+    box-shadow: 2px 2px 2px 2px;
     border-radius: 10px;
     h1 {
       margin-bottom: 20px;

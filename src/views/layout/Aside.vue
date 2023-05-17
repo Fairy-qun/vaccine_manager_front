@@ -1,33 +1,31 @@
 <template>
-  <div>
-    <el-aside style="width: store.asideWidth + 'px'">
-      <el-menu :default-active="defaultActive" :unique-opened="true" router :collapse="store.isCollapse" :collapse-transition="false" @select="selectHandler">
-        <template v-for="item in asideDataList" :key="item.id">
-          <el-sub-menu v-if="item.children && item.children.length > 0" :index="item.path">
-            <template #title>
-              <el-icon>
-                <component :is="item.icon"></component>
-              </el-icon>
-              <span>{{ item.name }}</span>
-            </template>
-            <el-menu-item v-for="item1 in item.children" :key="item1.id" :index="item1.path">
-              <el-icon>
-                <component :is="item1.icon"></component>
-              </el-icon>
-              <span>{{ item1.name }}</span>
-            </el-menu-item>
-          </el-sub-menu>
-          <el-menu-item v-else :index="item.path">
+  <div class="main">
+    <el-menu :default-active="defaultActive" :unique-opened="true" router :collapse="store.isCollapse" :collapse-transition="false" @select="selectHandler">
+      <template v-for="item in asideDataList" :key="item.id">
+        <el-sub-menu v-if="item.children && item.children.length > 0" :index="item.path">
+          <template #title>
             <el-icon>
-              <el-icon>
-                <component :is="item.icon"></component>
-              </el-icon>
+              <component :is="item.icon"></component>
             </el-icon>
             <span>{{ item.name }}</span>
+          </template>
+          <el-menu-item v-for="item1 in item.children" :key="item1.id" :index="item1.path">
+            <el-icon>
+              <component :is="item1.icon"></component>
+            </el-icon>
+            <span>{{ item1.name }}</span>
           </el-menu-item>
-        </template>
-      </el-menu>
-    </el-aside>
+        </el-sub-menu>
+        <el-menu-item v-else :index="item.path">
+          <el-icon>
+            <el-icon>
+              <component :is="item.icon"></component>
+            </el-icon>
+          </el-icon>
+          <span>{{ item.name }}</span>
+        </el-menu-item>
+      </template>
+    </el-menu>
   </div>
 </template>
 
@@ -57,12 +55,7 @@ const selectHandler = e => {
 </script>
 
 <style lang="scss" scoped>
-.el-aside {
-  transition: all 0.2s;
-  // background-color: rgb(55, 55, 137);
-  height: calc(100vh - 60px);
-  .el-menu {
-    border-right: none;
-  }
+.el-menu {
+  border-right: none;
 }
 </style>

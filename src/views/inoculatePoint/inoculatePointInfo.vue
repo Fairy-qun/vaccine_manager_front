@@ -19,43 +19,18 @@
           <el-col :span="6">
             <el-button type="primary" @click="queryHandler">查询</el-button>
           </el-col>
-          <el-col :span="6">
-            <el-button type="primary" @click="addHanddler">添加</el-button>
-          </el-col>
-          <el-col :span="6">
-            <el-popconfirm title="确定删除所选信息?" cancel-button-text="取消" confirm-button-text="确定" @cancel="cancelDeleteHandler" @confirm="confirmDeleteHandler">
-              <template #reference>
-                <el-button type="danger">批量删除</el-button>
-              </template>
-            </el-popconfirm>
-          </el-col>
         </el-row>
       </div>
     </div>
     <div>
-      <el-table :data="inoculatePoint_list" border stripe @select="selectTableHandler">
-        <el-table-column type="selection"></el-table-column>
-        <el-table-column prop="id" label="ID" width="50"></el-table-column>
+      <el-table :data="inoculatePoint_list" border stripe>
+        <el-table-column prop="id" label="ID" width="80"></el-table-column>
         <el-table-column prop="inoculatePoint_name" label="接种点名称"></el-table-column>
         <el-table-column prop="inoculatePoint_address" label="接种点地址"></el-table-column>
         <el-table-column prop="inoculatePoint_state" label="状态">
           <template #default="scoped">
             <el-tag type="success" v-if="scoped.row.inoculatePoint_state">启用</el-tag>
             <el-tag type="danger" v-else>未启用</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template #default="scoped">
-            <el-button type="primary" size="small" @click="updateHandler(scoped.row)">
-              <el-icon><Edit /></el-icon>
-            </el-button>
-            <el-popconfirm title="是否删除该数据?" @cancel="cancelDeleteHandler" @confirm="confirmDeleteOne(scoped.row)" cancel-button-text="取消" confirm-button-text="确定">
-              <template #reference>
-                <el-button type="danger" size="small">
-                  <el-icon><Delete /></el-icon>
-                </el-button>
-              </template>
-            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>

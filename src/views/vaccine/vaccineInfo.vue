@@ -1,9 +1,5 @@
 <template>
   <div class="main">
-    <div>
-      <el-button type="primary" @click="exportHandler" size="small">导出数据</el-button>
-      <el-button type="primary" @click="importHandler" size="small">导入数据</el-button>
-    </div>
     <div class="find_item">
       <div class="left">
         <el-row>
@@ -26,16 +22,6 @@
           <el-col :span="6">
             <el-button type="primary" @click="queryHandler">查询</el-button>
           </el-col>
-          <el-col :span="6">
-            <el-button type="primary" @click="addHanddler">添加</el-button>
-          </el-col>
-          <el-col :span="6">
-            <el-popconfirm title="确定删除所选信息?" cancel-button-text="取消" confirm-button-text="确定" @cancel="cancelDeleteHandler" @confirm="confirmDeleteHandler">
-              <template #reference>
-                <el-button type="danger">批量删除</el-button>
-              </template>
-            </el-popconfirm>
-          </el-col>
         </el-row>
       </div>
     </div>
@@ -47,25 +33,11 @@
         <el-table-column prop="vaccine_batch" label="批次"></el-table-column>
         <el-table-column prop="vaccine_categroy" label="分类"></el-table-column>
         <!-- <el-table-column prop="vaccine_img" label="图片" width="100"></el-table-column> -->
-        <el-table-column prop="vaccine_manufacturer" label="生产商" width="200"></el-table-column>
+        <el-table-column prop="vaccine_manufacturer" label="生产商"></el-table-column>
         <el-table-column prop="vaccine_productDate" label="生产日期"></el-table-column>
         <el-table-column prop="vaccine_overdueDate" label="有效期"></el-table-column>
         <el-table-column prop="vaccine_standard" label="注射规范"></el-table-column>
         <el-table-column prop="vaccine_explain" label="注射说明"></el-table-column>
-        <el-table-column label="操作">
-          <template #default="scoped">
-            <el-button type="primary" size="small" @click="updateHandler(scoped.row)">
-              <el-icon><Edit /></el-icon>
-            </el-button>
-            <el-popconfirm title="是否删除该数据?" @cancel="cancelDeleteHandler" @confirm="confirmDeleteOne(scoped.row)" cancel-button-text="取消" confirm-button-text="确定">
-              <template #reference>
-                <el-button type="danger" size="small">
-                  <el-icon><Delete /></el-icon>
-                </el-button>
-              </template>
-            </el-popconfirm>
-          </template>
-        </el-table-column>
       </el-table>
     </div>
     <!-- 分页操作 -->
@@ -129,56 +101,21 @@
         </el-form-item>
       </el-form>
     </Drawer>
-
-    <!-- 导出数据 -->
-    <el-dialog v-model="dialogTableExportVisible" title="数据导出预览" id="out-table">
-      <el-table :data="exportData">
-        <el-table-column prop="id" label="ID" width="50" />
-        <el-table-column prop="vaccine_name" label="疫苗名称" width="100" />
-        <el-table-column prop="vaccine_batch" label="疫苗批次" width="100" />
-        <el-table-column prop="vaccine_categroy" label="疫苗分类" width="100" />
-        <el-table-column prop="vaccine_manufacturer" label="生产商" width="100" />
-        <el-table-column prop="vaccine_productDate" label="生产日期" width="100" />
-        <el-table-column prop="vaccine_overdueDate" label="有效期" width="100" />
-        <el-table-column prop="vaccine_standard" label="注射规范" width="100" />
-        <el-table-column prop="vaccine_explain" label="注射说明" width="100" />
-      </el-table>
-      <template #footer>
-        <el-button type="primary" @click="confirmExport">确认导出</el-button>
-      </template>
-    </el-dialog>
-
-    <!-- 导入数据 -->
-    <el-dialog v-model="dialogTableImportVisible" title="数据导入">
-      <el-upload class="upload-demo" drag action multiple :auto-upload="false" :on-change="handleChange" accept=".xlsx,.xls">
-        <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-        <div class="el-upload__text">拖到此处上传 或者 <em>点击上传</em></div>
-        <template #tip>
-          <div class="el-upload__tip">只允许上传.xlsx,.xls格式文件</div>
-        </template>
-      </el-upload>
-      <template #footer>
-        <el-button type="primary" @click="confirmImport">确认导入数据</el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import * as xlsx from 'xlsx'
-import { getVaccineInfo, getVaccineInfoBy, addVaccineInfo, deleteVaccineInfo, updateVaccineInfo, exportVaccineInfo } from '@/api/vaccine.js'
+import { getVaccineInfo, getVaccineInfoBy, addVaccineInfo, deleteVaccineInfo, updateVaccineInfo } from '@/api/vaccine.js'
 import { getVaccineTypeInfo } from '@/api/vaccineType.js'
 import Drawer from '@/components/drawer.vue'
 import { UploadFilled } from '@element-plus/icons-vue'
 import { reactive, ref, onMounted } from 'vue'
 import { notice } from '@/utils.js'
-import { useExportTable } from '@/hooks/useExportTable.js'
-const { exportExcelList } = useExportTable()
 const vaccine_list = ref([])
 
 const form = reactive({
   pageNo: 1,
-  pageSize: 8
+  pageSize: 5
 })
 const total = ref(0)
 
@@ -394,94 +331,6 @@ const confirmUpdateHandler = () => {
       notice({ message: res.msg })
       updateDrawer.value = false
       getDataList()
-    }
-  })
-}
-
-// 导出数据
-const exportData = ref([])
-const dialogTableExportVisible = ref(false)
-const exportHandler = () => {
-  dialogTableExportVisible.value = true
-  exportVaccineInfo().then(res => {
-    if (res.code === 0) {
-      exportData.value = res.data
-    }
-  })
-}
-
-const confirmExport = () => {
-  exportExcelList('疫苗数据')
-  dialogTableExportVisible.value = false
-}
-
-// 导入数据
-const importList = reactive([])
-const dialogTableImportVisible = ref(false)
-const importHandler = () => {
-  dialogTableImportVisible.value = true
-}
-
-const confirmImport = () => {
-  sendBack(importList)
-  notice({ message: '导入数据成功' })
-  dialogTableImportVisible.value = false
-  getDataList()
-}
-const addForm1 = reactive({
-  vaccine_name: '',
-  vaccine_batch: '',
-  vaccine_categroy: '',
-  vaccine_img: '',
-  vaccine_manufacturer: '',
-  vaccine_productDate: '',
-  vaccine_overdueDate: '',
-  vaccine_standard: '',
-  vaccine_explain: ''
-})
-const sendBack = data => {
-  data.forEach(item => {
-    addForm1.vaccine_name = item['疫苗名称']
-    addForm1.vaccine_batch = item['疫苗批次']
-    addForm1.vaccine_categroy = item['疫苗分类']
-    addForm1.vaccine_manufacturer = item['生产商']
-    addForm1.vaccine_productDate = formatDate(item['生产日期'])
-    addForm1.vaccine_overdueDate = formatDate(item['有效期'])
-    addForm1.vaccine_standard = item['注射规范']
-    addForm1.vaccine_explain = item['注射说明']
-    addVaccineInfo(addForm1).then(res => {})
-  })
-}
-
-// 格式化导入的时间
-const formatDate = (numb, format = '-') => {
-  let time = new Date((numb - 1) * 24 * 3600000 + 1)
-  time.setYear(time.getFullYear() - 70)
-  let year = time.getFullYear() + ''
-  let month = time.getMonth() + 1 + ''
-  let date = time.getDate() + ''
-  if (format && format.length === 1) {
-    return year + format + month + format + date
-  }
-  return year + (month < 10 ? '0' + month : month) + (date < 10 ? '0' + date : date)
-}
-
-const handleChange = async e => {
-  const file = e.raw
-  let data = await readFile(file)
-  let workbook = xlsx.read(data, { type: 'binary' })
-  let worksheet = workbook.Sheets[workbook.SheetNames[0]]
-  const data1 = xlsx.utils.sheet_to_json(worksheet)
-  importList.push(...data1)
-}
-
-// 将读取文件转换为二进制文件
-const readFile = file => {
-  return new Promise((resolve, rject) => {
-    let reader = new FileReader()
-    reader.readAsBinaryString(file)
-    reader.onload = ev => {
-      resolve(ev.target.result)
     }
   })
 }

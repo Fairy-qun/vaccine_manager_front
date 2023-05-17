@@ -5,12 +5,12 @@
         <Header></Header>
       </el-header>
       <el-container>
-        <el-aside width="200px">
+        <el-aside width="store.asideWidth + 'px'">
           <Aside />
         </el-aside>
+        <TabBar class="tabBar" />
         <el-main>
-          <TabBar />
-          <div class="main-box" :style="{ left: store.asideWidth + 'px' }">
+          <div class="main-box">
             <router-view></router-view>
           </div>
         </el-main>
@@ -31,11 +31,21 @@ const store = useStore()
 .el-header {
   background: linear-gradient(to right, #4c6a8d, #2c4f60);
 }
+.el-main {
+}
 .main-box {
+  // transition: all 0.2s;
+  // position: absolute;
+  // top: 100px;
+  // right: 0;
+  // margin-left: 10px;
+  margin-top: 40px;
+}
+.el-aside {
+  margin-right: 20px;
   transition: all 0.2s;
-  position: absolute;
-  top: 110px;
-  right: 0;
-  margin-left: 10px;
+  // background-color: rgb(55, 55, 137);
+  box-shadow: 2px 0px 10px 1px #ccc;
+  height: calc(100vh - 60px);
 }
 </style>

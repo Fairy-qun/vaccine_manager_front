@@ -58,12 +58,28 @@ const routes = [
         component: () => import('@/views/vaccine/List.vue')
       },
       {
+        path: '/vaccine/type',
+        name: '/vaccine/type',
+        meta: {
+          title: '疫苗类型分类'
+        },
+        component: () => import('@/views/vaccine/vaccineType.vue')
+      },
+      {
         path: '/inoculate/list',
         name: '/inoculate/list',
         meta: {
           title: '接种管理'
         },
         component: () => import('@/views/inoculate/List.vue')
+      },
+      {
+        path: '/inoculate/add_info',
+        name: '/inoculate/add_info',
+        meta: {
+          title: '添加接种信息'
+        },
+        component: () => import('@/views/inoculate/AddInfo.vue')
       },
       {
         path: '/inoculate_point/list',
@@ -96,6 +112,30 @@ const routes = [
           title: '权限管理'
         },
         component: () => import('@/views/system/Access.vue')
+      },
+      {
+        path: '/vaccine/vaccine_getinfo',
+        name: '/vaccine/vaccine_getinfo',
+        meta: {
+          title: '疫苗管理'
+        },
+        component: () => import('@/views/vaccine/vaccineInfo.vue')
+      },
+      {
+        path: '/inoculate/my_inoculate_info',
+        name: '/inoculate/my_inoculate_info',
+        meta: {
+          title: '接种管理'
+        },
+        component: () => import('@/views/inoculate/myInoculateInfo.vue')
+      },
+      {
+        path: '/inoculate_point/inoculate_point_info',
+        name: '/inoculate_point/inoculate_point_info',
+        meta: {
+          title: '接种点管理'
+        },
+        component: () => import('@/views/inoculatePoint/inoculatePointInfo.vue')
       }
     ]
   }
